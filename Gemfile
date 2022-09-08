@@ -3,8 +3,6 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.1.2"
 
-#to add react to project
-gem 'webpacker'
 
 #for json serialisation
 gem 'fast_jsonapi'
