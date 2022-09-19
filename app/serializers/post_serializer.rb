@@ -1,6 +1,6 @@
 class PostSerializer
   include FastJsonapi::ObjectSerializer
-  attributes :title, :description
+  attributes :title, :description, :updated_at
 
   has_many :comments
 end
