@@ -1,7 +1,7 @@
 module Api
 	module V1
 		class PostsController < ApplicationController
-			protect_from_forgery with: :null_session
+			before_action :doorkeeper_authorize!
 
 			def index
 				posts = Post.all

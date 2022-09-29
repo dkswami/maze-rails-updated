@@ -1,14 +1,11 @@
 Rails.application.routes.draw do
 	root "pages#index"
 
-	namespace :api do
-		namespace :v1 do
-			resources :posts
-			resources :comments, only: [:create, :destroy, :update]
-		end
-	end
+  use_doorkeeper
+  devise_for :users
+	# get '*path', to: 'pages#index', via: :all
+  draw :api
 
-	get '*path', to: 'pages#index', via: :all
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
