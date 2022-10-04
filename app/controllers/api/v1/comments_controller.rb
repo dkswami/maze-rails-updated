@@ -7,7 +7,7 @@ module Api
 				comment = Comment.new(comment_params)
 
 				if comment.save
-					render json: CommentSerializer.new(comment).serialized_json
+					render json: comment
 				else 
 					render json: { error: comment.errors.messages }, status: 422
 				end
@@ -17,7 +17,7 @@ module Api
 				comment = Comment.find(params[:id])
 
 				if comment.update(comment_params)
-					render json: CommentSerializer.new(comment).serialized_json
+					render json: comment
 				else
 					render json: { error: comment.errors.messages }, status: 422
 				end

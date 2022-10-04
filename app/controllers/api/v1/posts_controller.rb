@@ -1,24 +1,26 @@
 module Api
 	module V1
 		class PostsController < ApplicationController
-			before_action :doorkeeper_authorize!
+			# before_action :doorkeeper_authorize!
 			protect_from_forgery with: :null_session
 
 			def index
 				posts = Post.all
-				render json:  PostSerializer.new(posts, options).serialized_json
+				render json:  posts.to_json(include: :comments)
+								 # PostSerializer.new(posts, options).serialized_json
+								 # posts.to_json(include: { book: { include: :user } })
 			end
 
 			def show
 				post = Post.find(params[:id])
-				render json: PostSerializer.new(post, options).serialized_json
+				render json: post.to_json(include: :comments)
 			end 
 
 			def create
 				post = Post.new(post_params)
 
 				if post.save
-					render json: PostSerializer.new(post).serialized_json
+					render json: post.to_json(include: :comments)
 				else
 					render json: { error: post.errors.messages }, status: 422
 				end
@@ -28,7 +30,7 @@ module Api
 				post = Post.find(params[:id])
 
 				if post.update(post_params)
-					render json: PostSerializer.new(post, options).serialized_json
+					render json: post.to_json(include: :comments)
 				else
 					render json: { error: post.errors.messages }, status: 422
 				end
