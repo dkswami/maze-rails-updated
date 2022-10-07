@@ -9,6 +9,7 @@ namespace :api do
     resources :comments, only: [:create, :destroy, :update]
 
     get '/users/me', to: 'users#me'
+    get '/users', to: 'users#index'
   end
 end
 

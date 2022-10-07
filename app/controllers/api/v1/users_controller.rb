@@ -8,6 +8,15 @@ module Api
         respond_to    :json
 
         # GET /me.json
+        def index
+          users = User.all
+          render json:  users
+        end
+        def show
+          @user = User.find(params[:id])
+          render json: @user
+        end
+
         def me
           if @current_user.nil?
             render json: { error: 'Not Authorized' }, status: :unauthorized

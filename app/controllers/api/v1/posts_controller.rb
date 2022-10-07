@@ -2,18 +2,33 @@ module Api
 	module V1
 		class PostsController < ApplicationController
 			before_action :doorkeeper_authorize!
+			before_action :current_user
 			protect_from_forgery with: :null_session
+			respond_to    :json
 
 			def index
 				posts = Post.all
-				render json:  posts.to_json(include: :comments)
+				render json:  posts.to_json(include: :comments )
+													 # .to_json(include: {created_by: { include: :user}})
 								 # PostSerializer.new(posts, options).serialized_json
 								 # posts.to_json(include: { book: { include: :user } })
 			end
 
 			def show
 				post = Post.find(params[:id])
-				render json: post.to_json(include: :comments)
+				# render json: post.to_json(include: :comments)
+				render json: {
+					id: post.id,
+					title: post.title,
+					description: post.description,
+					updated_at: post.updated_at.iso8601,
+					post_status: post.post_status,
+					created_by: {
+						user_id: post.user_id? ? post.user_id : '',
+						first_name: post.user.first_name? ? post.user.first_name : '',
+						last_name: post.user.last_name? ? post.user.last_name : ''},
+					comments: post.comments
+				}, status: :ok
 			end 
 
 			def create
@@ -48,11 +63,11 @@ module Api
 
 			private
 				def post_params
-					params.require(:post).permit(:title,:description)
+					params.require(:post).permit(:title,:description, :user_id, :post_status)
 				end
 
-				def options
-					@options ||= { include: %i[comments] }
+				def option
+					@option ||= { include: %i[user] }
 				end
 		end
 	end
