@@ -9,7 +9,7 @@ module Api
       def index
         posts = Post.all
         # user = User.find_by(posts.user_id)
-        render json: posts.as_json(include: [:comments], methods: :created_by)
+        render json: posts.as_json(include: [comments: { methods: :commented_by}] , methods: :created_by)
         # posts.as_json(include: {  method: :created_by })
 
         # posts.as_json( include: { created_by: { include: { user: }}})
@@ -20,20 +20,21 @@ module Api
 
       def show
         post = Post.find(params[:id])
+        render json: post.as_json(include: [comments: { methods: :commented_by}] , methods: :created_by)
         # render json: post.to_json(include: :comments)
-        render json: {
-          id: post.id,
-          title: post.title,
-          description: post.description,
-          updated_at: post.updated_at.iso8601,
-          post_status: post.post_status,
-          created_by: {
-            user_id: post.user_id,
-            first_name: post.user.first_name,
-            last_name: post.user.last_name
-          },
-          comments: post.comments
-        }, status: :ok
+        # render json: {
+        #   id: post.id,
+        #   title: post.title,
+        #   description: post.description,
+        #   updated_at: post.updated_at.iso8601,
+        #   post_status: post.post_status,
+        #   created_by: {
+        #     user_id: post.user_id,
+        #     first_name: post.user.first_name,
+        #     last_name: post.user.last_name
+        #   },
+        #   comments: post.comments
+        # }, status: :ok
       end
 
       def create
