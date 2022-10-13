@@ -5,10 +5,19 @@ module Doorkeeper
     before_action :validate_presence_of_client, only: [:revoke]
 
     def create
-      headers.merge!(authorize_response.headers)
+      user = User.find_by(email: params[:email])
+      if user.deactivated
+        render json: { error: 'User is deactivated' }, status: 401
 
-      render json: authorize_response.body,
-             status: authorize_response.status
+      else
+        headers.merge!(authorize_response.headers)
+
+        render json: authorize_response.body,
+               status: authorize_response.status
+      end
+
+
+
     rescue Errors::DoorkeeperError => e
       handle_token_exception(e)
     end
