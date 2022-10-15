@@ -1,6 +1,6 @@
 module Api
   module V1
-    class PostsController < ApplicationController
+    class PostsController < ApiController
       before_action :doorkeeper_authorize!
       before_action :current_user
       protect_from_forgery with: :null_session
@@ -8,10 +8,16 @@ module Api
 
       def index
         posts = Post.all
-        # user = User.find_by(posts.user_id)
-        render json: posts.as_json(include: [comments: { methods: :commented_by}] , methods: :created_by)
-        # posts.as_json(include: {  method: :created_by })
+        posts_for_user = Post.where(user_id: @current_user.id).or(Post.where(post_status: "public"))
 
+        if current_user.role == 'admin'
+          render json: posts.as_json(include: [comments: { methods: :commented_by}] , methods: :created_by)
+        else current_user.role == 'user'
+          render json: posts_for_user.as_json(include: [comments: { methods: :commented_by}] , methods: :created_by)
+        end
+
+        # posts.as_json(include: {  method: :created_by })
+        # user = User.find_by(posts.user_id)
         # posts.as_json( include: { created_by: { include: { user: }}})
         # .to_json(include: {created_by: { include: :user}})
         # PostSerializer.new(posts, options).serialized_json
