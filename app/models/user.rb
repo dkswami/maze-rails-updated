@@ -10,6 +10,7 @@ class User < ApplicationRecord
   enum role: %i[user admin]
   has_many :posts, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :likes, dependent: :destroy
 
   #only for devise login deactivation
   def active_for_authentication?

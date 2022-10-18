@@ -11,9 +11,9 @@ module Api
         posts_for_user = Post.where(user_id: @current_user.id).or(Post.where(post_status: "public"))
 
         if current_user.role == 'admin'
-          render json: posts.as_json(include: [comments: { methods: :commented_by}] , methods: :created_by)
+          render json: posts.as_json(include: [:likes, comments: { methods: :commented_by}], methods: [:created_by, :likes_count])
         else current_user.role == 'user'
-          render json: posts_for_user.as_json(include: [comments: { methods: :commented_by}] , methods: :created_by)
+          render json: posts_for_user.as_json(include: [:likes, comments: { methods: :commented_by}] , methods: [:created_by, :likes_count])
         end
 
         # posts.as_json(include: {  method: :created_by })
@@ -26,7 +26,7 @@ module Api
 
       def show
         post = Post.find(params[:id])
-        render json: post.as_json(include: [comments: { methods: :commented_by}] , methods: :created_by)
+        render json: post.as_json(include: [:likes, comments: { methods: :commented_by}] , methods: [:created_by, :likes_count])
         # render json: post.to_json(include: :comments)
         # render json: {
         #   id: post.id,
